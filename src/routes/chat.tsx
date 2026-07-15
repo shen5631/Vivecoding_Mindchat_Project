@@ -5,6 +5,14 @@ import { ArrowLeft, ExternalLink, Loader2, Send, ShieldCheck } from "lucide-reac
 
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import { toast } from "sonner";
 import { getSession, sendMessage } from "@/lib/chat.functions";
 
