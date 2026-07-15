@@ -82,10 +82,16 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       {
         name: "description",
         content:
-          "대인기피증과 심리적 부담으로 상담이 망설여지는 분들을 위한 익명 AI 대화. 필요한 순간, 근처 전문 상담사와 연결됩니다.",
+          "대인기피증과 심리적 부담으로 상담이 망설여지는 분들을 위한 익명 AI 대화. 필요한 순간, 근처 전문 상담사와 자연스럽게 연결됩니다.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
+      { property: "og:title", content: "마음쉼 · 익명 AI 심리 상담" },
+      { name: "twitter:title", content: "마음쉼 · 익명 AI 심리 상담" },
+      { property: "og:description", content: "대인기피증과 심리적 부담으로 상담이 망설여지는 분들을 위한 익명 AI 대화. 필요한 순간, 근처 전문 상담사와 자연스럽게 연결됩니다." },
+      { name: "twitter:description", content: "대인기피증과 심리적 부담으로 상담이 망설여지는 분들을 위한 익명 AI 대화. 필요한 순간, 근처 전문 상담사와 자연스럽게 연결됩니다." },
+      { property: "og:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/5229ea29-3a52-4c1c-938b-007d190df408/id-preview-078fa67c--c5bf597a-fa90-4567-b9a9-ab9d537968de.lovable.app-1784102843157.png" },
+      { name: "twitter:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/5229ea29-3a52-4c1c-938b-007d190df408/id-preview-078fa67c--c5bf597a-fa90-4567-b9a9-ab9d537968de.lovable.app-1784102843157.png" },
     ],
     links: [
       {
