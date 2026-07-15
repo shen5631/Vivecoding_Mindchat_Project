@@ -188,7 +188,7 @@ function ChatPage() {
             {session && (
               <Button asChild>
                 <a
-                  href={`https://www.mindinfo.kr/new/index.asp?sido=${encodeURIComponent(session.sido)}&gugun=${encodeURIComponent(session.gugun)}`}
+                  href={`https://www.mindinfo.kr/pcip400pm/list.asp?sido=${encodeURIComponent(session.sido)}&gugun=${encodeURIComponent(session.gugun)}`}
                   target="_blank"
                   rel="noreferrer"
                 >
