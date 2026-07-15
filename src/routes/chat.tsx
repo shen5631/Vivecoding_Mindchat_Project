@@ -11,8 +11,8 @@ import { getSession, sendMessage } from "@/lib/chat.functions";
 export const Route = createFileRoute("/chat")({
   head: () => ({
     meta: [
-      { title: "상담 대화 · 마음쉼" },
-      { name: "description", content: "익명 AI 상담 도우미와의 대화 세션" },
+      { title: "마인챗과의 대화 · Mind_Chat" },
+      { name: "description", content: "마인챗과 나누는 익명 대화 세션" },
       { name: "robots", content: "noindex" },
     ],
   }),
