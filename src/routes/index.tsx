@@ -9,6 +9,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { toast } from "sonner";
 import { REGIONS, SIDO_LIST } from "@/lib/regions";
 import { createSession } from "@/lib/chat.functions";
+import { APP_VERSION } from "@/lib/version";
 
 export const Route = createFileRoute("/")({
   head: () => ({
