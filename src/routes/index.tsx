@@ -13,16 +13,16 @@ import { createSession } from "@/lib/chat.functions";
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "마음쉼 · 익명 AI 심리 상담" },
+      { title: "Mind_Chat · 마인챗과 편하게 시작하는 대화" },
       {
         name: "description",
         content:
-          "대인기피증과 심리적 부담으로 상담이 망설여지는 분들을 위한 익명 AI 대화. 필요한 순간, 근처 전문 상담사와 자연스럽게 연결됩니다.",
+          "사람과의 대화가 부담스러운 순간, 마인챗과 익명으로 편하게 이야기해요. 준비가 되면 근처 전문 상담사와도 연결됩니다.",
       },
-      { property: "og:title", content: "마음쉼 · 익명 AI 심리 상담" },
+      { property: "og:title", content: "Mind_Chat · 마인챗과 편하게 시작하는 대화" },
       {
         property: "og:description",
-        content: "대인기피증과 심리적 부담으로 상담이 망설여지는 분들을 위한 익명 AI 대화. 필요한 순간, 근처 전문 상담사와 자연스럽게 연결됩니다.",
+        content: "사람과의 대화가 부담스러운 순간, 마인챗과 익명으로 편하게 이야기해요.",
       },
       { property: "og:type", content: "website" },
     ],
