@@ -5,6 +5,14 @@ import { ArrowLeft, ExternalLink, Loader2, Send, ShieldCheck } from "lucide-reac
 
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import { toast } from "sonner";
 import { getSession, sendMessage } from "@/lib/chat.functions";
 
@@ -61,17 +69,23 @@ function ChatPage() {
     if (!el) return;
     const onScroll = () => {
       const gap = el.scrollHeight - el.scrollTop - el.clientHeight;
-      stickToBottomRef.current = gap < 80;
+      stickToBottomRef.current = gap < 120;
     };
     el.addEventListener("scroll", onScroll, { passive: true });
     return () => el.removeEventListener("scroll", onScroll);
   }, []);
 
   useEffect(() => {
-    if (stickToBottomRef.current) {
-      scrollRef.current?.scrollTo({ top: scrollRef.current.scrollHeight, behavior: "smooth" });
-    }
-  }, [messages, sending]);
+    if (!stickToBottomRef.current) return;
+    const el = scrollRef.current;
+    if (!el) return;
+    // double rAF to wait for layout after new bubble mounts
+    requestAnimationFrame(() =>
+      requestAnimationFrame(() => {
+        el.scrollTo({ top: el.scrollHeight, behavior: "smooth" });
+      }),
+    );
+  }, [messages, sending, showRecommendation]);
 
   useEffect(() => {
     if (!sending) inputRef.current?.focus();
@@ -80,6 +94,7 @@ function ChatPage() {
   async function handleSend() {
     const text = input.trim();
     if (!text || !sessionId || sending) return;
+    stickToBottomRef.current = true; // 새 메시지 보낼 땐 항상 하단으로
     setSending(true);
     setInput("");
     const optimisticId = `local-${Date.now()}`;
@@ -106,9 +121,6 @@ function ChatPage() {
     navigate({ to: "/" });
   }
 
-  const searchQuery = session
-    ? encodeURIComponent(`${session.sido} ${session.gugun} 심리상담센터`)
-    : "";
 
   return (
     <div className="flex min-h-screen flex-col bg-[oklch(0.98_0.01_240)]">
@@ -142,39 +154,51 @@ function ChatPage() {
               <span className="inline-block animate-pulse">답변을 정리하고 있어요…</span>
             </div>
           )}
-          {showRecommendation && session && (
-            <div className="rounded-2xl border border-primary/30 bg-primary/5 p-4">
-              <h3 className="text-sm font-semibold text-foreground">
-                전문 상담사와 이야기해 보는 것도 좋을 것 같아요.
-              </h3>
-              <p className="mt-1 text-sm text-muted-foreground">
-                지금 나눈 대화를 바탕으로, {session.sido} {session.gugun} 근처의 전문 상담을 살펴볼 수 있어요. 이동 여부는 언제나 당신의 선택이에요.
-              </p>
-              <div className="mt-3 flex flex-wrap gap-2">
-                <a
-                  href="https://www.mindinfo.kr/new/index.asp"
-                  target="_blank"
-                  rel="noreferrer"
-                  className="inline-flex items-center gap-1.5 rounded-md bg-primary px-3 py-1.5 text-sm font-medium text-primary-foreground hover:bg-primary/90"
-                >
-                  {session.sido} {session.gugun} 근처 상담센터 찾기 <ExternalLink className="h-3.5 w-3.5" />
-                </a>
-                <a
-                  href={`https://www.google.com/search?q=${searchQuery}`}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="inline-flex items-center gap-1.5 rounded-md border border-border bg-background px-3 py-1.5 text-sm text-foreground hover:bg-accent"
-                >
-                  검색으로 찾기 <ExternalLink className="h-3.5 w-3.5" />
-                </a>
-              </div>
-              <p className="mt-2 text-[11px] text-muted-foreground">
-                링크를 열면 마인드인포에서 "{session.sido} {session.gugun}"으로 검색해 가까운 상담센터를 확인할 수 있어요.
-              </p>
-            </div>
-          )}
         </div>
       </div>
+
+      <Dialog open={showRecommendation} onOpenChange={setShowRecommendation}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle>전문 상담사와 이야기해 볼까?</DialogTitle>
+            <DialogDescription>
+              지금까지 나눈 이야기를 바탕으로 준비가 된 것 같아. 원하지 않으면 언제든 닫아도 괜찮아.
+              {session && (
+                <>
+                  <br />
+                  <span className="mt-2 block text-foreground">
+                    아래 버튼을 누르면 <b>{session.sido} {session.gugun}</b> 지역 정보를 가지고 마인드인포로 이동해서 근처 상담센터를 확인할 수 있어.
+                  </span>
+                </>
+              )}
+            </DialogDescription>
+          </DialogHeader>
+          {session && (
+            <div className="rounded-lg border border-border bg-muted/40 p-3 text-sm">
+              <div className="text-muted-foreground">선택된 지역</div>
+              <div className="mt-0.5 font-medium text-foreground">
+                {session.sido} {session.gugun}
+              </div>
+            </div>
+          )}
+          <DialogFooter className="gap-2 sm:justify-between">
+            <Button variant="outline" onClick={() => setShowRecommendation(false)}>
+              취소
+            </Button>
+            {session && (
+              <Button asChild>
+                <a
+                  href={`https://www.mindinfo.kr/new/index.asp?sido=${encodeURIComponent(session.sido)}&gugun=${encodeURIComponent(session.gugun)}`}
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  {session.sido} {session.gugun} 상담센터 찾기 <ExternalLink className="ml-1.5 h-3.5 w-3.5" />
+                </a>
+              </Button>
+            )}
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
 
       <div className="sticky bottom-0 border-t border-border/60 bg-background/95 backdrop-blur">
         <div className="mx-auto max-w-2xl px-4 py-3">

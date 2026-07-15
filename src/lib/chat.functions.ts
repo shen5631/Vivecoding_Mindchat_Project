@@ -146,15 +146,22 @@ export const sendMessage = createServerFn({ method: "POST" })
       .insert({ session_id: data.sessionId, role: "user", content: data.content });
     if (insErr) throw new Error(insErr.message);
 
-    const { data: history, error: histErr } = await admin
-      .from("messages")
-      .select("role, content")
-      .eq("session_id", data.sessionId)
-      .order("created_at", { ascending: true });
+    const [{ data: history, error: histErr }, { data: sessionRow }] = await Promise.all([
+      admin
+        .from("messages")
+        .select("role, content")
+        .eq("session_id", data.sessionId)
+        .order("created_at", { ascending: true }),
+      admin.from("sessions").select("sido, gugun").eq("id", data.sessionId).single(),
+    ]);
     if (histErr) throw new Error(histErr.message);
 
+    const locationLine = sessionRow
+      ? `\n\n## 사용자 지역\n- 사용자의 대략적 지역: ${sessionRow.sido} ${sessionRow.gugun}\n- recommend_counselor 를 true 로 하는 응답에서는 reply 본문 안에 이 지역 기준으로 도움 받을 수 있는 상담센터 유형(예: "○○ 지역 정신건강복지센터", "청년마음건강센터", "대학교 학생상담센터" 등) 2~3곳을 짧게 자연스럽게 소개해 주세요. 실제 존재가 확실하지 않은 특정 병원/기관 이름은 만들어 내지 말고, 위와 같은 공공 상담 자원 카테고리 위주로 안내하세요. 마지막에는 "아래 창에서 지역을 선택해 자세한 위치를 확인할 수 있어" 같이 하단 팝업을 부드럽게 언급해 주세요.`
+      : "";
+
     const chatMessages = [
-      { role: "system" as const, content: SYSTEM_PROMPT },
+      { role: "system" as const, content: SYSTEM_PROMPT + locationLine },
       ...((history ?? []) as Msg[]).map((m) => ({ role: m.role, content: m.content })),
     ];
 
