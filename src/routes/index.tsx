@@ -160,6 +160,13 @@ function Home() {
         <p className="mt-6 text-center text-xs text-muted-foreground">
           위급한 상황이시라면 즉시 자살예방 상담전화 <b className="text-foreground">1393</b> 으로 연락해 주세요.
         </p>
+
+        <div className="mt-8 flex items-center justify-center gap-2 text-[11px] text-muted-foreground">
+          <span className="inline-flex items-center rounded-full border border-border/60 bg-background/60 px-2.5 py-0.5 font-mono">
+            v{APP_VERSION}
+          </span>
+          <span>Mind_Chat</span>
+        </div>
       </div>
     </div>
   );
