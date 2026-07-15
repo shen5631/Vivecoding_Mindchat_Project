@@ -34,6 +34,7 @@ function ChatPage() {
   const [showRecommendation, setShowRecommendation] = useState(false);
   const inputRef = useRef<HTMLTextAreaElement>(null);
   const scrollRef = useRef<HTMLDivElement>(null);
+  const stickToBottomRef = useRef(true);
 
   useEffect(() => {
     if (typeof window === "undefined") return;
@@ -56,7 +57,20 @@ function ChatPage() {
   }, [load, navigate]);
 
   useEffect(() => {
-    scrollRef.current?.scrollTo({ top: scrollRef.current.scrollHeight, behavior: "smooth" });
+    const el = scrollRef.current;
+    if (!el) return;
+    const onScroll = () => {
+      const gap = el.scrollHeight - el.scrollTop - el.clientHeight;
+      stickToBottomRef.current = gap < 80;
+    };
+    el.addEventListener("scroll", onScroll, { passive: true });
+    return () => el.removeEventListener("scroll", onScroll);
+  }, []);
+
+  useEffect(() => {
+    if (stickToBottomRef.current) {
+      scrollRef.current?.scrollTo({ top: scrollRef.current.scrollHeight, behavior: "smooth" });
+    }
   }, [messages, sending]);
 
   useEffect(() => {
@@ -138,22 +152,25 @@ function ChatPage() {
               </p>
               <div className="mt-3 flex flex-wrap gap-2">
                 <a
-                  href={`https://www.google.com/search?q=${searchQuery}`}
+                  href="https://www.mindinfo.kr/new/index.asp"
                   target="_blank"
                   rel="noreferrer"
                   className="inline-flex items-center gap-1.5 rounded-md bg-primary px-3 py-1.5 text-sm font-medium text-primary-foreground hover:bg-primary/90"
                 >
-                  근처 상담센터 찾기 <ExternalLink className="h-3.5 w-3.5" />
+                  {session.sido} {session.gugun} 근처 상담센터 찾기 <ExternalLink className="h-3.5 w-3.5" />
                 </a>
                 <a
-                  href="https://www.mentalhealth.go.kr/portal/main/index.do"
+                  href={`https://www.google.com/search?q=${searchQuery}`}
                   target="_blank"
                   rel="noreferrer"
                   className="inline-flex items-center gap-1.5 rounded-md border border-border bg-background px-3 py-1.5 text-sm text-foreground hover:bg-accent"
                 >
-                  국가정신건강정보포털 <ExternalLink className="h-3.5 w-3.5" />
+                  검색으로 찾기 <ExternalLink className="h-3.5 w-3.5" />
                 </a>
               </div>
+              <p className="mt-2 text-[11px] text-muted-foreground">
+                링크를 열면 마인드인포에서 "{session.sido} {session.gugun}"으로 검색해 가까운 상담센터를 확인할 수 있어요.
+              </p>
             </div>
           )}
         </div>
