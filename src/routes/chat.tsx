@@ -153,6 +153,7 @@ function ChatPage() {
               <span className="inline-block animate-pulse">답변을 정리하고 있어요…</span>
             </div>
           )}
+          <div ref={bottomRef} />
         </div>
       </div>
 
