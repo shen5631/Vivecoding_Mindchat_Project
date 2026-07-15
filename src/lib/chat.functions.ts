@@ -61,34 +61,41 @@ async function loadAdmin() {
   return supabaseAdmin;
 }
 
+const COUNSELOR_TAG = "[[RECOMMEND_COUNSELOR]]";
+
 function extractReply(raw: string): { reply: string; recommend_counselor: boolean } {
-  if (!raw) {
-    return { reply: "음… 잠깐 생각이 멈췄네. 다시 한 번 얘기해줄래?", recommend_counselor: false };
-  }
-  // strip markdown code fences
+  const fallback = "음… 잠깐 생각이 멈췄네. 다시 한 번 얘기해줄래?";
+  if (!raw || !raw.trim()) return { reply: fallback, recommend_counselor: false };
+
   let text = raw.trim();
-  text = text.replace(/^```(?:json)?\s*/i, "").replace(/```\s*$/i, "").trim();
-  // try direct parse
-  const tryParse = (s: string) => {
+  // 혹시 모델이 코드블록/JSON을 뱉었을 때 최대한 사람 문장만 추출
+  text = text.replace(/^```(?:json|text)?\s*/i, "").replace(/```\s*$/i, "").trim();
+
+  // JSON 형태로 왔으면 reply 필드를 추출
+  if (text.startsWith("{")) {
     try {
-      const o = JSON.parse(s);
-      if (o && typeof o.reply === "string") {
-        return { reply: o.reply, recommend_counselor: !!o.recommend_counselor };
+      const parsed = JSON.parse(text);
+      if (parsed && typeof parsed.reply === "string") {
+        text = parsed.reply;
       }
-    } catch {}
-    return null;
-  };
-  const direct = tryParse(text);
-  if (direct) return direct;
-  // extract first {...} block
-  const start = text.indexOf("{");
-  const end = text.lastIndexOf("}");
-  if (start !== -1 && end > start) {
-    const sliced = tryParse(text.slice(start, end + 1));
-    if (sliced) return sliced;
+    } catch {
+      // {"reply": "..." 만 뽑아보기
+      const m = text.match(/"reply"\s*:\s*"((?:[^"\\]|\\.)*)"/);
+      if (m) {
+        try {
+          text = JSON.parse(`"${m[1]}"`);
+        } catch {
+          text = m[1];
+        }
+      }
+    }
   }
-  // fallback: use raw text as reply (strip any leftover braces/quotes)
-  return { reply: text, recommend_counselor: false };
+
+  const recommend = text.includes(COUNSELOR_TAG);
+  text = text.replace(new RegExp(COUNSELOR_TAG.replace(/[[\]]/g, "\\$&"), "g"), "").trim();
+
+  if (!text) text = fallback;
+  return { reply: text, recommend_counselor: recommend };
 }
 
 export const createSession = createServerFn({ method: "POST" })
