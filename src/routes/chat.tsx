@@ -121,9 +121,6 @@ function ChatPage() {
     navigate({ to: "/" });
   }
 
-  const searchQuery = session
-    ? encodeURIComponent(`${session.sido} ${session.gugun} 심리상담센터`)
-    : "";
 
   return (
     <div className="flex min-h-screen flex-col bg-[oklch(0.98_0.01_240)]">
