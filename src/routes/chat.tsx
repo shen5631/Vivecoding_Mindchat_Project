@@ -69,17 +69,23 @@ function ChatPage() {
     if (!el) return;
     const onScroll = () => {
       const gap = el.scrollHeight - el.scrollTop - el.clientHeight;
-      stickToBottomRef.current = gap < 80;
+      stickToBottomRef.current = gap < 120;
     };
     el.addEventListener("scroll", onScroll, { passive: true });
     return () => el.removeEventListener("scroll", onScroll);
   }, []);
 
   useEffect(() => {
-    if (stickToBottomRef.current) {
-      scrollRef.current?.scrollTo({ top: scrollRef.current.scrollHeight, behavior: "smooth" });
-    }
-  }, [messages, sending]);
+    if (!stickToBottomRef.current) return;
+    const el = scrollRef.current;
+    if (!el) return;
+    // double rAF to wait for layout after new bubble mounts
+    requestAnimationFrame(() =>
+      requestAnimationFrame(() => {
+        el.scrollTo({ top: el.scrollHeight, behavior: "smooth" });
+      }),
+    );
+  }, [messages, sending, showRecommendation]);
 
   useEffect(() => {
     if (!sending) inputRef.current?.focus();
@@ -88,6 +94,7 @@ function ChatPage() {
   async function handleSend() {
     const text = input.trim();
     if (!text || !sessionId || sending) return;
+    stickToBottomRef.current = true; // 새 메시지 보낼 땐 항상 하단으로
     setSending(true);
     setInput("");
     const optimisticId = `local-${Date.now()}`;
