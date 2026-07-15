@@ -78,12 +78,7 @@ function ChatPage() {
 
   useEffect(() => {
     if (!stickToBottomRef.current) return;
-    // double rAF to wait for layout after new bubble mounts
-    requestAnimationFrame(() =>
-      requestAnimationFrame(() => {
-        bottomRef.current?.scrollIntoView({ behavior: "smooth", block: "end" });
-      }),
-    );
+    bottomRef.current?.scrollIntoView({ behavior: "auto", block: "end" });
   }, [messages, sending, showRecommendation]);
 
   useEffect(() => {
