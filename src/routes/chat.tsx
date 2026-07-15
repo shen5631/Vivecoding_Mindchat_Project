@@ -78,12 +78,10 @@ function ChatPage() {
 
   useEffect(() => {
     if (!stickToBottomRef.current) return;
-    const el = scrollRef.current;
-    if (!el) return;
     // double rAF to wait for layout after new bubble mounts
     requestAnimationFrame(() =>
       requestAnimationFrame(() => {
-        el.scrollTo({ top: el.scrollHeight, behavior: "smooth" });
+        bottomRef.current?.scrollIntoView({ behavior: "smooth", block: "end" });
       }),
     );
   }, [messages, sending, showRecommendation]);
