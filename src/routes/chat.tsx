@@ -42,6 +42,7 @@ function ChatPage() {
   const [showRecommendation, setShowRecommendation] = useState(false);
   const inputRef = useRef<HTMLTextAreaElement>(null);
   const scrollRef = useRef<HTMLDivElement>(null);
+  const bottomRef = useRef<HTMLDivElement>(null);
   const stickToBottomRef = useRef(true);
 
   useEffect(() => {
@@ -77,12 +78,10 @@ function ChatPage() {
 
   useEffect(() => {
     if (!stickToBottomRef.current) return;
-    const el = scrollRef.current;
-    if (!el) return;
     // double rAF to wait for layout after new bubble mounts
     requestAnimationFrame(() =>
       requestAnimationFrame(() => {
-        el.scrollTo({ top: el.scrollHeight, behavior: "smooth" });
+        bottomRef.current?.scrollIntoView({ behavior: "smooth", block: "end" });
       }),
     );
   }, [messages, sending, showRecommendation]);
@@ -154,6 +153,7 @@ function ChatPage() {
               <span className="inline-block animate-pulse">답변을 정리하고 있어요…</span>
             </div>
           )}
+          <div ref={bottomRef} />
         </div>
       </div>
 
@@ -188,7 +188,7 @@ function ChatPage() {
             {session && (
               <Button asChild>
                 <a
-                  href={`https://www.mindinfo.kr/new/index.asp?sido=${encodeURIComponent(session.sido)}&gugun=${encodeURIComponent(session.gugun)}`}
+                  href={`https://www.mindinfo.kr/pcip400pm/list.asp?sido=${encodeURIComponent(session.sido)}&gugun=${encodeURIComponent(session.gugun)}`}
                   target="_blank"
                   rel="noreferrer"
                 >
