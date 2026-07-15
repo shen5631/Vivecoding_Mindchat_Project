@@ -106,7 +106,7 @@ function ChatPage() {
           >
             <ArrowLeft className="h-4 w-4" /> 종료
           </button>
-          <div className="text-sm font-medium text-foreground">마음쉼</div>
+          <div className="text-sm font-medium text-foreground">마인챗</div>
           <div className="inline-flex items-center gap-1 text-xs text-muted-foreground">
             <ShieldCheck className="h-3.5 w-3.5" /> 익명
           </div>
