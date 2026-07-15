@@ -42,6 +42,7 @@ function ChatPage() {
   const [showRecommendation, setShowRecommendation] = useState(false);
   const inputRef = useRef<HTMLTextAreaElement>(null);
   const scrollRef = useRef<HTMLDivElement>(null);
+  const bottomRef = useRef<HTMLDivElement>(null);
   const stickToBottomRef = useRef(true);
 
   useEffect(() => {
