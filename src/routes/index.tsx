@@ -63,9 +63,9 @@ function Home() {
           <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-primary/10 text-primary">
             <Shield className="h-7 w-7" />
           </div>
-          <h1 className="text-3xl font-semibold tracking-tight text-foreground">마음쉼</h1>
+          <h1 className="text-3xl font-semibold tracking-tight text-foreground">Mind_Chat</h1>
           <p className="mt-2 text-sm text-muted-foreground">
-            아무에게도 말하기 어려운 마음, 익명 AI와 천천히 시작해요.
+            혼자 담아둔 마음, 마인챗과 편하게 한 마디부터 시작해요.
           </p>
         </header>
 
